@@ -28,6 +28,17 @@ steps:
     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
     replaceExistingArchive: true
 
+- task: S3Upload@1
+  inputs:
+    awsCredentials: 'AWS'
+    regionName: 'us-east-1'
+    bucketName: 'very-basic-lambda-app-archive'
+    sourceFolder: '$(Build.ArtifactStagingDirectory)'
+    globExpressions: '**'
+    targetFolder: '$(Build.BuildId)'
+    filesAcl: 'bucket-owner-full-control'
+    createBucket: true
+
 - task: LambdaDeployFunction@1
   inputs:
     awsCredentials: 'AWS'
